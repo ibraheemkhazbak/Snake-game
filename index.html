@@ -1,0 +1,121 @@
+
+<script>
+let canvas;
+let ctx;
+let snake;
+let grid;
+window.onload=function(){
+
+//assign canvas and context
+     canvas=document.getElementById('canv');
+     ctx=canvas.getContext("2d");
+
+
+
+    //making the canvas
+canvas.width=600;
+canvas.height=600;
+
+//variables
+ grid=20;
+
+snake=new Snake(grid,canvas.width/2-grid,canvas.height/2-grid);
+
+
+//update
+
+setInterval(()=>{
+    ctx.fillStyle='black';
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+snake.show();
+snake.update();
+
+//food code here
+
+},1000/10);
+
+
+
+window.addEventListener("keydown",(e)=>{
+
+ switch(e.keyCode){
+    case 37:snake.direction(-1,0); break;
+    case 38:snake.direction(0,-1);break;
+    case 39:snake.direction(1,0);break;
+    case 40:snake.direction(0,1);break;
+ }
+ 
+
+});
+
+
+};
+
+function Food(){
+
+}
+
+function Position(x,y){
+this.x=x;
+this.y=y;
+}
+
+function Snake(grid,x,y){
+    this.tail=[new Position(x,y)];
+  
+this.yVelocity=0;
+this.xVelocity=0;
+
+this.add=function(){
+    this.tail[this.tail.length]=new Position(this.tail[this.tail.length-1].x,this.tail[this.tail.length-1].y);
+}
+
+
+this.show=function(){
+
+         ctx.fillStyle="white";
+    for (let i = 0; i < this.tail.length; i++) {
+        ctx.fillRect(this.tail[i].x,this.tail[i].y,grid,grid);
+        
+    }
+         
+      }
+
+      this.update=function(){
+        //move forward  
+    this.end=this.tail[this.tail.length-1];
+
+    this.end.x= this.tail[0].x+this.xVelocity*grid;
+         this.end.y= this.tail[0].y+this.yVelocity*grid;
+
+    this.tail.pop();
+    this.tail.unshift(this.end);
+
+    //teleport if got in border
+          if(this.tail[0].x<0){
+              this.tail[0].x=canvas.width-grid;
+          }else if(this.tail[0].y<0){
+          this.tail[0].y=canvas.height-grid;
+          }else if(this.tail[0].x>=canvas.width){
+              this.tail[0].x=0;
+          }else if(this.tail[0].y>=canvas.height) {
+              this.tail[0].y=0;
+          }
+      }
+
+this.direction=function(sx,sy){
+ this.xVelocity=sx;
+ this.yVelocity=sy;
+}
+
+
+}
+
+
+
+</script>
+<body>
+    <canvas id="canv">
+
+    </canvas>
+</body>
